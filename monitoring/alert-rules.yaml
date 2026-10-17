@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: todo-api-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: todo-api
+      rules:
+        - alert: TodoApiDown
+          expr: up{job="todo-api"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "todo-api is down"
+            runbook: "docs/runbook.md#todoapidown"
+
+        - alert: TodoApiHighErrorRate
+          expr: |
+            sum(rate(http_requests_total{job="todo-api",status_code=~"5.."}[5m]))
+              / sum(rate(http_requests_total{job="todo-api"}[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "More than 5% of requests are failing"
+            runbook: "docs/runbook.md#todoapihigherrorrate"
+
+        - alert: TodoApiHighLatency
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{job="todo-api"}[5m])) by (le)) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "95th percentile latency is above 500 ms"
+            runbook: "docs/runbook.md#todoapihighlatency"
