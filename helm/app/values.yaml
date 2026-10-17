@@ -2,7 +2,7 @@ replicaCount: 1   # the app keeps todos in memory, so run a single replica
 
 image:
   repository: 216016752342.dkr.ecr.ap-south-1.amazonaws.com/todo-api
-  tag: "b19e1ae3"   # use the tag that is in ECR now; Jenkins updates this line
+  tag: "0b8873b4"   # use the tag that is in ECR now; Jenkins updates this line
   pullPolicy: IfNotPresent
 
 service:
