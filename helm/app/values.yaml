@@ -1,0 +1,18 @@
+replicaCount: 1   # the app keeps todos in memory, so run a single replica
+
+image:
+  repository: 216016752342.dkr.ecr.ap-south-1.amazonaws.com/todo-api
+  tag: "b19e1ae3"   # use the tag that is in ECR now; Jenkins updates this line
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP   # reach it with kubectl port-forward; set LoadBalancer later if you want public access
+  port: 80
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
